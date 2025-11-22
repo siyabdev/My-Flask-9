@@ -4,6 +4,8 @@ from models import Payroll
 #Create payroll
 def create_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_hours, worked_hours, early, late, leaves, bonus1, bonus2):
 
+    print("payroll call recieved")
+
     try:
         create_query = Payroll(
             employee_id = employee_id,

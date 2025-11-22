@@ -1,17 +1,25 @@
 from flask import Blueprint, request, jsonify
 from crud.payroll.create import create_payroll_crud
+from controller.employee.create import get_employee_by_employee_id
 from models import Payroll
 
 payroll_create_bp = Blueprint("payroll_create_bp", __name__, url_prefix="/payroll")
 
 def get_payroll(employee_id, batch):
+
+    print(f"employee_id: {employee_id} batch: {batch}")
+
     payroll = Payroll.query.filter_by(employee_id=employee_id, batch=batch).first()
+
+    print(payroll)
     return payroll
 
 #Create payroll
 @payroll_create_bp.route("/create", methods=["POST"])
 def create_payroll():
     data = request.json
+
+    print(f"data: {data}")
 
     employee_id = data.get("employee_id")
     batch = data.get("batch")
@@ -27,13 +35,29 @@ def create_payroll():
 
     if not all([employee_id, batch, basic_salary, hourly_rate, monthly_hours, worked_hours, early, late, leaves, bonus1, bonus2]):
         return jsonify({"error": "Missing fields"}), 400
-    
+
+    print("getting payroll by id")
+
     payroll = get_payroll(employee_id, batch)
     if payroll: 
         return jsonify({
                 "CODE": "PAYROLL_ALREADY_EXISTS",
                 "message": f"This payroll {employee_id}, '{batch}' already exists, try a new one"
         }), 403
+    
+
+    print("calling crud")
+
+    check_employee = get_employee_by_employee_id(employee_id)
+
+    print(check_employee)
+
+    if not check_employee:
+        return jsonify({
+                "CODE": "EMPLOYEE_NOT_FOUND",
+                "message": f"Employee {employee_id} not found, try a new one"
+        }), 403
+    
     
     new_payroll = create_payroll_crud(
         employee_id = employee_id,
