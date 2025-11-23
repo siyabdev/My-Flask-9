@@ -9,6 +9,9 @@ from controller.employee.get import get_bp
 
 #Payroll
 from controller.payroll.create import payroll_create_bp
+from controller.payroll.delete import payroll_delete_bp
+from controller.payroll.get import payroll_get_bp
+from controller.payroll.update import payroll_update_bp
 
 app = Flask(__name__)
 
@@ -29,7 +32,9 @@ app.register_blueprint(get_bp)
 
 #Payroll
 app.register_blueprint(payroll_create_bp)
-
+app.register_blueprint(payroll_delete_bp)
+app.register_blueprint(payroll_get_bp)
+app.register_blueprint(payroll_update_bp)
 
 @app.route("/")
 def home():
