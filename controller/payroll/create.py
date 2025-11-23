@@ -1,18 +1,8 @@
 from flask import Blueprint, request, jsonify
 from crud.payroll.create import create_payroll_crud
-from controller.employee.create import get_employee_by_employee_id
-from models import Payroll
+from utils.utils import get_employee_by_employee_id
 
 payroll_create_bp = Blueprint("payroll_create_bp", __name__, url_prefix="/payroll")
-
-def get_payroll(employee_id, batch):
-
-    print(f"employee_id: {employee_id} batch: {batch}")
-
-    payroll = Payroll.query.filter_by(employee_id=employee_id, batch=batch).first()
-
-    print(payroll)
-    return payroll
 
 #Create payroll
 @payroll_create_bp.route("/create", methods=["POST"])
@@ -36,29 +26,23 @@ def create_payroll():
     if not all([employee_id, batch, basic_salary, hourly_rate, monthly_hours, worked_hours, early, late, leaves, bonus1, bonus2]):
         return jsonify({"error": "Missing fields"}), 400
 
-    print("getting payroll by id")
-
-    payroll = get_payroll(employee_id, batch)
-    if payroll: 
+    checking_payroll = get_payroll(employee_id, batch)
+    if checking_payroll: 
         return jsonify({
                 "CODE": "PAYROLL_ALREADY_EXISTS",
                 "message": f"This payroll {employee_id}, '{batch}' already exists, try a new one"
-        }), 403
-    
+        })
 
-    print("calling crud")
+    checking_employee = get_employee_by_employee_id(employee_id)
 
-    check_employee = get_employee_by_employee_id(employee_id)
+    print(checking_employee)
 
-    print(check_employee)
-
-    if not check_employee:
+    if not checking_employee:
         return jsonify({
                 "CODE": "EMPLOYEE_NOT_FOUND",
                 "message": f"Employee {employee_id} not found, try a new one"
-        }), 403
-    
-    
+        }), 404
+
     new_payroll = create_payroll_crud(
         employee_id = employee_id,
         batch = batch,
@@ -89,4 +73,3 @@ def create_payroll():
             "CODE":"EXCEPTIONAL_ERROR_OCCURED",
             "message":f"Exceptional error occured for payroll {employee_id}, '{batch}' creation, please try again"
         })
-    

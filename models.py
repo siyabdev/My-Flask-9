@@ -8,9 +8,6 @@ class Employee(db.Model):
     password = db.Column(db.String(120), nullable=False)
     role = db.Column(db.String(20), nullable=False, default="guest")
 
-    def __repr__(self):
-        return f"<Employee {self.username}>"
-    
     def to_dict(self):
         return {
             "id": self.id,
@@ -39,9 +36,6 @@ class Payroll(db.Model):
     bonus1 = db.Column(db.Integer, nullable = False)
     bonus2 = db.Column(db.Integer, nullable = False)
 
-    def __repr__(self):
-        return f"<Employee {self.username}>"
-    
     def to_dict(self):
         return {
             "id": self.id,

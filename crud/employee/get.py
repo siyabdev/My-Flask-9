@@ -1,5 +1,5 @@
 from database import db
-from controller.employee.create import get_employee
+from utils.utils import get_employee
 from models import Employee
 
 #Get employee
