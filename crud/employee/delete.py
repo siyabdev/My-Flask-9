@@ -1,25 +1,19 @@
 from database import db
-from utils.utils import get_employee
 from models import Employee
+from sqlalchemy.exc import IntegrityError
 
 #Delete employee
 def delete_employee_crud(username):
-    employee_by_username = get_employee(username)
-    delete_query = False
-
     try:
-        if employee_by_username:
-            delete_query = Employee.query.filter_by(username=username).first()
-            db.session.delete(delete_query)
-            db.session.commit()
-        
-            if delete_query:
-                return delete_query, employee_by_username
-        else:
-            return delete_query, employee_by_username
-            
-    except Exception as error:
-        print(f"error:{error}")
-        return error
+        delete_query = Employee.query.filter_by(username=username).first()
+        db.session.delete(delete_query)
+        db.session.commit()
+        return delete_query
     
-    return {"message": "Employee deleted successfully"}, 200
+    except IntegrityError:
+        print("raising exception for integrity")
+        raise
+    
+    except Exception:
+        print("raising exception for unknown error")
+        raise

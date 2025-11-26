@@ -1,5 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify
 from crud.employee.update import update_employee_crud
+from sqlalchemy.exc import IntegrityError
+import logging
+
+app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
 
 update_bp = Blueprint("update_bp", __name__, url_prefix="/employee")
 
@@ -7,29 +12,41 @@ update_bp = Blueprint("update_bp", __name__, url_prefix="/employee")
 @update_bp.route("/update", methods=["PUT"])
 def update_employee():
     data = request.json
-    username = data.get("username")
-    name = data.get("name")
-    email = data.get("email")
-    role = data.get("role")
-    password = data.get("password")
-
-    if not username:
-        return jsonify({"error": "Username is required"}), 400
-    
-    employee = update_employee_crud(username=username, name=name, password=password, role=role, email=email)
 
     try:
-        if not employee:
-            return jsonify({"error": "Employee not found"}), 404
+        username = data.get("username")
+        name = data.get("name")
+        email = data.get("email")
+        role = data.get("role")
+        password = data.get("password")
+
+        if not username:
+            app.logger.error("Username required")
+            return jsonify({"error": "Username is required"}), 400
         
-        if employee:
+        employee = update_employee_crud(username=username, name=name, password=password, role=role, email=email)
+
+        try:
+            if not employee:
+                app.logger.error("No employee")
+                return jsonify({"error": "Employee not found"}), 404
+            
+            if employee:
+                app.logger.info("Employee updated")
+                return jsonify({
+                        "CODE": "EMPLOYEE_UPDATED",
+                        "message": f"Employee '{username}' is updated"
+                    })
+        except IntegrityError as error:
+            app.logger.error("integrity error")
             return jsonify({
-                    "CODE": "EMPLOYEE_UPDATED",
-                    "message": f"Employee '{username}' is updated"
-                })
+                "CODE":"integrity_ERROR_OCCURED",
+                "message":f"integrity error occured for employee '{username}' deletion, {error}"
+            })
              
     except Exception as error:
             print(f"error:{error}")
+            app.logger.error("Exceptional error")
             return jsonify({
                 "CODE":"EXCEPTIONAL_ERROR_OCCURED",
                 "message":f"Exceptional error occured for employee '{username}' update, please try again"

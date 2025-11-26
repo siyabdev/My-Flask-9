@@ -1,5 +1,6 @@
 from database import db
 from models import Payroll
+from sqlalchemy.exc import IntegrityError
 
 #Create payroll
 def create_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_hours, worked_hours, early, late, leaves, bonus1, bonus2):
@@ -23,9 +24,14 @@ def create_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
         
         db.session.add(create_query)
         db.session.commit()
-        
+    
         return create_query
     
-    except Exception as error:
-        print(f"error:{error}")
-        return error
+    except IntegrityError:
+        print("raising exception for integrity")
+        raise
+
+    except Exception:
+        print("raising exception for unknown error")
+        raise
+

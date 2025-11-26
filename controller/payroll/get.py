@@ -1,8 +1,14 @@
-from flask import Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify
 from crud.payroll.get import get_payroll_crud, get_payrolls_crud
 from models import Payroll
+import logging
 
-payroll_get_bp = Blueprint("payroll_get_bp", __name__, url_prefix="/payroll")
+
+app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
+
+payroll_get_bp = Blueprint("payroll_get_bp", __name__, url_prefix="/payroll")\
+
 
 #Get payroll
 @payroll_get_bp.route("/get", methods=["GET"])
@@ -12,6 +18,7 @@ def get_payroll():
     batch = data.get("batch")
 
     if not employee_id or not batch:
+        app.logger.error("No id and batch.")
         return jsonify({
             "CODE":"NO_EMPLOYEE_ID_OR_BATCH_PROVIDED",
             "message":"Please enter employee id and batch"
@@ -26,6 +33,7 @@ def get_payroll():
             return payroll.to_dict()
         
         else:
+            app.logger.error("Id or batch doesnt exist")
             return jsonify({
                 "CODE":"EMPLOYEE_ID_OR_BATCH_DOESNT_EXIST",
                 "message": f"Please try another employee_id or batch, {employee_id}, '{batch}' is not registered"
@@ -33,6 +41,7 @@ def get_payroll():
 
     except Exception as error:
             print(f"error:{error}")
+            app.logger.error("Exceptional error")
             return jsonify({
                 "CODE":"EXCEPTIONAL_ERROR_OCCURED",
                 "message":f"Exceptional error occured for getting payroll {employee_id} '{batch}', please try again"
@@ -48,12 +57,14 @@ def get_all_payrolls():
          if get_payrolls:
               return Payroll.to_dict_list(get_payrolls)
          else:
+            app.logger.info("No payrolls found")
             return jsonify({
                 "CODE":"NO_PAYROLLS_FOUND",
                 "message":"No payrolls found, please add payroll first"
             })
     except Exception as error:
         print(f"error:{error}")
+        app.logger.error("Exceptional error")
         return jsonify({
             "CODE":"EXCEPTIONAL_ERROR_OCCURED",
             "message":"Exceptional error occured for getting all payrolls, please try again"

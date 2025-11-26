@@ -1,5 +1,6 @@
 from flask import Flask
 from database import init_db
+import logging
 
 #Employee
 from controller.employee.create import create_bp
@@ -14,10 +15,11 @@ from controller.payroll.get import payroll_get_bp
 from controller.payroll.update import payroll_update_bp
 
 app = Flask(__name__)
+app.logger.setLevel(logging.INFO)
 
 #Point SQLAlchemy to your SQLite database
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:////home/iotexpert/Documents/web-dev/python/my-flask-9/database/myimab.db"
-app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:siyab123123@localhost:5432/myimab'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #Initialize DB
 init_db(app)
