@@ -1,5 +1,6 @@
 from flask import Flask
 from database import init_db
+from flask_cors import CORS
 import logging
 
 #Employee
@@ -15,6 +16,7 @@ from controller.payroll.get import payroll_get_bp
 from controller.payroll.update import payroll_update_bp
 
 app = Flask(__name__)
+CORS(app)
 app.logger.setLevel(logging.INFO)
 
 #Point SQLAlchemy to your SQLite database
@@ -41,7 +43,6 @@ app.register_blueprint(payroll_update_bp)
 @app.route("/")
 def home():
     return "Welcome to Flask"
-
 
 if __name__ == "__main__":
     app.run(debug=True)
