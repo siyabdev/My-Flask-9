@@ -1,5 +1,6 @@
 from database import db
 from models import Payroll
+from sqlalchemy.exc import IntegrityError
 
 #Delete payroll
 def delete_payroll_crud(employee_id, batch):
@@ -12,7 +13,11 @@ def delete_payroll_crud(employee_id, batch):
             return delete_query
         else:
             return delete_query
-            
-    except Exception as error:
-        print(f"error:{error}")
-        return error
+        
+    except IntegrityError:
+        print("raising exception for integrity")
+        raise
+
+    except Exception:
+        print("raising exception for unknown error")
+        raise

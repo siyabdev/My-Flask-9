@@ -1,5 +1,6 @@
 from database import db
 from utils.utils import get_payroll
+from sqlalchemy.exc import IntegrityError
 
 #Update payroll
 def update_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_hours, worked_hours, early, late, leaves, bonus1, bonus2):
@@ -42,6 +43,10 @@ def update_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
 
         return payroll
 
-    except Exception as error:
-        print(f"error:{error}")
-        return error
+    except IntegrityError:
+        print("raising exception for integrity")
+        raise
+
+    except Exception:
+        print("raising exception for unknown error")
+        raise
