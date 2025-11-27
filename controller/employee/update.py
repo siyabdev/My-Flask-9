@@ -23,27 +23,25 @@ def update_employee():
         if not username:
             app.logger.error("Username required")
             return jsonify({"error": "Username is required"}), 400
-        
-        employee = update_employee_crud(username=username, name=name, password=password, role=role, email=email)
+        try:        
+            employee = update_employee_crud(username=username, name=name, password=password, role=role, email=email)
 
-        try:
             if not employee:
                 app.logger.error("No employee")
                 return jsonify({"error": "Employee not found"}), 404
-            
-            if employee:
-                app.logger.info("Employee updated")
-                return jsonify({
-                        "CODE": "EMPLOYEE_UPDATED",
-                        "message": f"Employee '{username}' is updated"
-                    })
         except IntegrityError as error:
             app.logger.error("integrity error")
             return jsonify({
                 "CODE":"integrity_ERROR_OCCURED",
                 "message":f"integrity error occured for employee '{username}' deletion, {error}"
             })
-             
+        
+        if employee:
+            app.logger.info("Employee updated")
+            return jsonify({
+                    "CODE": "EMPLOYEE_UPDATED",
+                    "message": f"Employee '{username}' is updated"
+                })
     except Exception as error:
             print(f"error:{error}")
             app.logger.error("Exceptional error")
