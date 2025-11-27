@@ -29,7 +29,7 @@ def update_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
         
         if leaves:
             payroll.leaves = leaves
-        
+
         if bonus1:
             payroll.bonus1 = bonus1
 

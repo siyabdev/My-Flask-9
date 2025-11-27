@@ -70,7 +70,7 @@ def create_payroll():
             print(f"error:{error}")
             return jsonify({
                 "CODE":"INTEGRITY_ERROR_OCCURED",
-                "message":f"Integrity error occured for payroll {employee_id}, '{batch}' creation, please try again"})
+                "message":f"Integrity error {error} occured for payroll {employee_id}, '{batch}' creation, please try again"})
         if new_payroll:
             app.logger.info("Payroll created")
             return jsonify({
