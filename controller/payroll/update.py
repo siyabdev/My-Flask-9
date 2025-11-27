@@ -30,9 +30,9 @@ def update_payroll():
             app.logger.error("Id or batch required")
             return jsonify({"error": "Employee id or batch required"}), 400
         
-        payroll = update_payroll_crud(employee_id=employee_id, batch=batch, basic_salary=basic_salary, hourly_rate=hourly_rate, monthly_hours=monthly_hours, worked_hours=worked_hours, early=early, late=late, leaves=leaves, bonus1=bonus1, bonus2=bonus2)
-        
         try:
+            payroll = update_payroll_crud(employee_id=employee_id, batch=batch, basic_salary=basic_salary, hourly_rate=hourly_rate, monthly_hours=monthly_hours, worked_hours=worked_hours, early=early, late=late, leaves=leaves, bonus1=bonus1, bonus2=bonus2)
+        
             if not payroll:
                 app.logger.error("No payroll")
                 return jsonify({"error": "Payroll not found"}), 404
