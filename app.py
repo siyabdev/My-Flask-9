@@ -20,7 +20,8 @@ CORS(app)
 app.logger.setLevel(logging.INFO)
 
 #Point SQLAlchemy to your SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:siyab123123@localhost:5432/myimab'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:c/4N.F8-gj_taW%@db.zqgwyzqhhcoqwppkxqgf.supabase.co:5432/postgres'
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:siyab123123@localhost:5432/myimab'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 #Initialize DB
