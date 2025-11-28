@@ -1,12 +1,8 @@
-from flask import Flask, Blueprint, request, jsonify
+from flask import Flask, Blueprint, request, jsonify, current_app
 from crud.employee.create import create_employee_crud
 from utils.utils import get_employee
-import logging
 from sqlalchemy.exc import IntegrityError
 from schemas.employee import CreateEmployeeRequest, EmployeeResponse, EmployeeListResponse
-
-app = Flask(__name__)
-app.logger.setLevel(logging.INFO)
 
 create_bp = Blueprint("create_bp", __name__, url_prefix="/employee")
 
@@ -21,11 +17,12 @@ def create_employee():
     employee_by_username = get_employee(data.username)
 
     if employee_by_username:
-        app.logger.error("Employee already exists.")
+        current_app.logger.info("Employee already exists.")
         return jsonify({
                 "code": "EMPLOYEE_ALREADY_EXISTS",
                 "message": f"This username {data.username} already exists, try a new one"
         }), 403
+    
 
     try:
         new_employee = create_employee_crud(
@@ -35,6 +32,8 @@ def create_employee():
             password=data.password,
             role=data.role
         )
+
+        current_app.logger.info("employee created")
     
         return jsonify({
             "code": "EMPLOYEE_CREATED",

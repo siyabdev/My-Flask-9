@@ -1,49 +1,62 @@
 from flask import Flask
 from database import init_db
 from flask_cors import CORS
-import logging
 
-#Employee
+from config import Config
+
+# Employee controllers
 from controller.employee.create import create_bp
 from controller.employee.delete import delete_bp
 from controller.employee.update import update_bp
 from controller.employee.get import get_bp
 
-#Payroll
+# Payroll controllers
 from controller.payroll.create import payroll_create_bp
 from controller.payroll.delete import payroll_delete_bp
 from controller.payroll.get import payroll_get_bp
 from controller.payroll.update import payroll_update_bp
 
-app = Flask(__name__)
-CORS(app)
-app.logger.setLevel(logging.INFO)
 
-#Point SQLAlchemy to your SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:c/4N.F8-gj_taW%@db.zqgwyzqhhcoqwppkxqgf.supabase.co:5432/postgres'
-#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:siyab123123@localhost:5432/myimab'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+def create_app():
+    app = Flask(__name__)
 
-#Initialize DB
-init_db(app)
 
-#Blueprints
+    # Load configuration
+    app.config.from_object(Config)
 
-#Employee
-app.register_blueprint(create_bp)
-app.register_blueprint(delete_bp)
-app.register_blueprint(update_bp)
-app.register_blueprint(get_bp)
+    # CORS
+    CORS(app)
 
-#Payroll
-app.register_blueprint(payroll_create_bp)
-app.register_blueprint(payroll_delete_bp)
-app.register_blueprint(payroll_get_bp)
-app.register_blueprint(payroll_update_bp)
+    # Logging
+    app.logger.setLevel(app.config["LOG_LEVEL"])
 
-@app.route("/")
-def home():
-    return "Welcome to Flask"
+    app.logger.info("Test")
+
+
+    # Initialize database
+    init_db(app)
+
+    # Register Blueprints
+
+    # Employee
+    app.register_blueprint(create_bp)
+    app.register_blueprint(delete_bp)
+    app.register_blueprint(update_bp)
+    app.register_blueprint(get_bp)
+
+    # Payroll
+    app.register_blueprint(payroll_create_bp)
+    app.register_blueprint(payroll_delete_bp)
+    app.register_blueprint(payroll_get_bp)
+    app.register_blueprint(payroll_update_bp)
+
+    @app.route("/")
+    def home():
+        return "Welcome to Flask"
+
+    return app
+
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app = create_app()
+    app.run(debug=Config.DEBUG)
