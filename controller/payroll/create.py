@@ -38,6 +38,7 @@ def create_payroll():
                 "CODE": "EMPLOYEE_NOT_FOUND",
                 "message": f"Employee {data.employee_id} not found, try a new one"
         }), 404
+    
     try:
         new_payroll = create_payroll_crud(
         employee_id = data.employee_id,

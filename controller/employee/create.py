@@ -23,7 +23,6 @@ def create_employee():
                 "message": f"This username {data.username} already exists, try a new one"
         }), 403
     
-
     try:
         new_employee = create_employee_crud(
             name=data.name,
