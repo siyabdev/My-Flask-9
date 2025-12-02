@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, current_app
 from crud.employee.get import get_employee_crud, get_employees_crud
-from models import Employee
+from schemas.employee import EmployeeResponse, EmployeeListResponse
 
 get_bp = Blueprint("get_bp", __name__, url_prefix="/employee")
 
@@ -23,7 +23,7 @@ def get_employee():
 
     try:
         if employee:
-            return employee.to_dict()
+            return EmployeeResponse(employee).to_dict()
         
         else:
             current_app.logger.error("Username is not registered")
@@ -48,7 +48,7 @@ def get_all_employees():
          get_employees = get_employees_crud()
 
          if get_employees:
-              return Employee.to_dict_list(get_employees)
+              return EmployeeListResponse.build(get_employees)
          else:
             current_app.logger.error("No employees found")
             return jsonify({
