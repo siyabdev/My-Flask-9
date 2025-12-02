@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from crud.payroll.get import get_payroll_crud, get_payrolls_crud
 from models import Payroll
-
+from schemas.payroll import PayrollResponse, PayrollListResponse
 payroll_get_bp = Blueprint("payroll_get_bp", __name__, url_prefix="/payroll")\
 
 
@@ -25,7 +25,7 @@ def get_payroll():
 
     try:
         if payroll:
-            return payroll.to_dict()
+            return PayrollResponse(payroll).to_dict()
         
         else:
             current_app.logger.error("Id or batch doesnt exist")
@@ -50,7 +50,7 @@ def get_all_payrolls():
          get_payrolls = get_payrolls_crud()
 
          if get_payrolls:
-              return Payroll.to_dict_list(get_payrolls)
+              return PayrollListResponse.build(get_payrolls)
          else:
             current_app.logger.info("No payrolls found")
             return jsonify({

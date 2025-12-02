@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify, current_app
 from crud.payroll.create import create_payroll_crud
 from utils.utils import get_payroll
-
 from sqlalchemy.exc import IntegrityError
-from schemas.payroll import CreatePayrollRequest, PayrollResponse, PayrollListResponse
+from schemas.payroll import CreatePayrollRequest, PayrollResponse
 
 payroll_create_bp = Blueprint("payroll_create_bp", __name__, url_prefix="/payroll")
 
