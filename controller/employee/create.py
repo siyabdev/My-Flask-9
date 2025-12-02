@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint, request, jsonify, current_app
+from flask import Blueprint, request, jsonify, current_app
 from crud.employee.create import create_employee_crud
 from utils.utils import get_employee
 from sqlalchemy.exc import IntegrityError
@@ -12,6 +12,7 @@ def create_employee():
     data = CreateEmployeeRequest(request.json)
 
     if not data.is_valid():
+        current_app.logger.error("Missing fields.")
         return jsonify({"error": "Missing fields"}), 400
     
     employee_by_username = get_employee(data.username)
@@ -33,7 +34,6 @@ def create_employee():
         )
 
         current_app.logger.info("employee created")
-    
         return jsonify({
             "code": "EMPLOYEE_CREATED",
             "data": EmployeeResponse(new_employee).to_dict()

@@ -1,12 +1,8 @@
-from flask import Flask, Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from crud.employee.update import update_employee_crud
 from utils.utils import get_employee
 from sqlalchemy.exc import IntegrityError
 from schemas.employee import UpdateEmployeeRequest, EmployeeResponse
-import logging
-
-app = Flask(__name__)
-app.logger.setLevel(logging.INFO)
 
 update_bp = Blueprint("update_bp", __name__, url_prefix="/employee")
 
@@ -16,12 +12,14 @@ def update_employee():
     data = UpdateEmployeeRequest(request.json)
 
     if not data.has_username():
+        current_app.logger.error("Username required.")
         return jsonify({
             "code": "USERNAME_REQUIRED", 
             "error": "Username required"
             }), 400
 
     if not data.has_any_updates():
+        current_app.logger.error("Data missing.")
         return jsonify({
             "code": "DATA_MISSING", 
             "error": "Required fields for data update not provided"
@@ -29,6 +27,7 @@ def update_employee():
     
     employee = get_employee(data.username)
     if not employee:
+        current_app.logger.error("Employee not found.")
         return jsonify({
             "code": "EMPLOYEE_NOT_FOUND", 
             "error": "Required fields for data update not provided"
@@ -36,7 +35,7 @@ def update_employee():
 
     try:        
         updated_employee = update_employee_crud(username=data.username, name=data.name, password=data.password, role=data.role, email=data.email)
-
+        current_app.logger.info("Employee updated.")
         return jsonify({
             "code": "EMPLOYEE_UPDATED",
             "data": EmployeeResponse(updated_employee).to_dict()

@@ -1,12 +1,8 @@
-from flask import Flask, Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app
 from crud.payroll.delete import delete_payroll_crud
 from utils.utils import get_payroll
-import logging
 from sqlalchemy.exc import IntegrityError
 from schemas.payroll import DeletePayrollRequest
-
-app = Flask(__name__)
-app.logger.setLevel(logging.INFO)
 
 payroll_delete_bp = Blueprint("payroll_delete_bp", __name__, url_prefix="/payroll")
 
@@ -21,7 +17,7 @@ def delete_payroll():
     payroll = get_payroll(data.employee_id, data.batch)
 
     if not payroll:
-        app.logger.info("Payroll doesnt exist.")
+        current_app.logger.info("Payroll doesnt exist.")
         return jsonify({
             "CODE": "PAYROLL_DOESNT_EXIST",
             "message": f"Payroll doesnt exist, please enter a valid employee id {data.employee_id} and batch '{data.batch}'"
@@ -30,7 +26,7 @@ def delete_payroll():
         delete_query = delete_payroll_crud(employee_id=data.employee_id, batch=data.batch)
         
         if delete_query:
-                app.logger.info("Payroll deleted.")
+                current_app.logger.info("Payroll deleted.")
                 return jsonify({
                         "CODE": "PAYROLL_DELETED",
                         "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted"
