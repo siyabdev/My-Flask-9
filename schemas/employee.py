@@ -70,7 +70,6 @@ class DeleteEmployeeRequest:
     def is_valid(self):
         return self.username is not None
 
-
 class EmployeeResponse:
     def __init__(self, employee):
         self.id = employee.id
@@ -87,7 +86,6 @@ class EmployeeResponse:
             "username": self.username,
             "role": self.role
         }
-
 
 class EmployeeListResponse:
     @staticmethod

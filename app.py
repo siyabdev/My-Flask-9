@@ -1,7 +1,6 @@
 from flask import Flask
 from database import init_db
 from flask_cors import CORS
-
 from config import Config
 
 # Employee controllers
@@ -16,10 +15,8 @@ from controller.payroll.delete import payroll_delete_bp
 from controller.payroll.get import payroll_get_bp
 from controller.payroll.update import payroll_update_bp
 
-
 def create_app():
     app = Flask(__name__)
-
 
     # Load configuration
     app.config.from_object(Config)
@@ -29,14 +26,12 @@ def create_app():
 
     # Logging
     app.logger.setLevel(app.config["LOG_LEVEL"])
-
     app.logger.info("Test")
-
 
     # Initialize database
     init_db(app)
 
-    # Register Blueprints
+    # Blueprints
 
     # Employee
     app.register_blueprint(create_bp)
