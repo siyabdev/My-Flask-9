@@ -5,6 +5,8 @@ from sqlalchemy.exc import IntegrityError
 #Create employee
 def create_employee_crud(name, email, username, password, role):
 
+    print("calling employee crud")
+
     try:
         create_query = Employee(
             name=name,
@@ -13,10 +15,17 @@ def create_employee_crud(name, email, username, password, role):
             password=password,
             role=role
         )
+
+        print("attempting database insert")
         
         db.session.add(create_query)
+
+        print("attempting commit")
+
         db.session.commit()
-        
+
+        print("commit complete")
+
         return create_query
 
     except IntegrityError:

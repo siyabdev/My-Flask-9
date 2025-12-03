@@ -10,13 +10,11 @@ update_bp = Blueprint("update_bp", __name__, url_prefix="/employee")
 @update_bp.route("/update", methods=["PUT"])
 def update_employee():
     data = UpdateEmployeeRequest(request.json)
+    valid, message = data.is_valid()
 
-    if not data.has_username():
-        current_app.logger.error("Username required.")
-        return jsonify({
-            "code": "USERNAME_REQUIRED", 
-            "error": "Username required"
-            }), 400
+    if not valid:
+        current_app.logger.error(f"Schema error. {message}")
+        return jsonify({"error": f"Schema error. {message}"}), 400
 
     if not data.has_any_updates():
         current_app.logger.error("Data missing.")

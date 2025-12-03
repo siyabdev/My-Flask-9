@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify, current_app
 from crud.employee.create import create_employee_crud
 from utils.utils import get_employee
 from sqlalchemy.exc import IntegrityError
-from schemas.employee import CreateEmployeeRequest, EmployeeResponse, EmployeeListResponse
+from schemas.employee import CreateEmployeeRequest, EmployeeResponse
+
 
 create_bp = Blueprint("create_bp", __name__, url_prefix="/employee")
 
@@ -10,10 +11,11 @@ create_bp = Blueprint("create_bp", __name__, url_prefix="/employee")
 @create_bp.route("/create", methods=["POST"])
 def create_employee():
     data = CreateEmployeeRequest(request.json)
+    valid, message = data.is_valid()
 
-    if not data.is_valid():
-        current_app.logger.error("Missing fields.")
-        return jsonify({"error": "Missing fields"}), 400
+    if not valid:
+        current_app.logger.error(f"Schema error. {message}")
+        return jsonify({"error": f"Schema error. {message}"}), 400
     
     employee_by_username = get_employee(data.username)
 

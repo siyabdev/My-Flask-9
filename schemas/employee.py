@@ -1,3 +1,10 @@
+import enum
+
+class RoleType(enum.Enum):
+    ADMIN = 'admin'
+    MANAGER = 'manager'
+    GUEST = 'guest'
+
 class CreateEmployeeRequest:
     def __init__(self, data):
         self.name = data.get("name")
@@ -7,7 +14,23 @@ class CreateEmployeeRequest:
         self.role = data.get("role", "guest")
 
     def is_valid(self):
-        return all([self.name, self.email, self.username, self.password])
+        # Required fields
+        if not all([self.name, self.email, self.username, self.password]):
+            return False, "Missing required fields"
+
+        # Validate username length
+        if len(self.username) < 6:
+            return False, "Username must be at least 6 characters long"
+
+        # Validate password length
+        if len(self.password) < 6:
+            return False, "Password must be at least 6 characters long"
+
+        # Validate role against enum
+        if self.role not in [role.value for role in RoleType]:
+            return False, "Invalid role provided."
+
+        return True, None
 
 class UpdateEmployeeRequest:
     def __init__(self, data):
@@ -17,8 +40,24 @@ class UpdateEmployeeRequest:
         self.password = data.get("password")
         self.role = data.get("role")
 
-    def has_username(self):
-        return self.username is not None
+    def is_valid(self):
+
+        if not self.username:
+            return False, "Username not provided"
+
+        # Validate username length
+        if len(self.username) < 6:
+            return False, "Username must be at least 6 characters long"
+
+        # Validate password length
+        if len(self.password) < 6:
+            return False, "Password must be at least 6 characters long"
+
+        # Validate role against enum
+        if self.role and self.role not in [role.value for role in RoleType]:
+            return False, "Invalid role provided."
+        
+        return True, None
 
     def has_any_updates(self):
         return any([self.name, self.email, self.password, self.role])
