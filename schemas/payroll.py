@@ -13,7 +13,10 @@ class CreatePayrollRequest:
         self.bonus2 = data.get("bonus2")
 
     def is_valid(self):
-        return all([self.employee_id, self.batch, self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2])
+        if not all([self.employee_id, self.batch, self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2]):
+            return False, "Missing required fields"
+        
+        return True, None
 
 class UpdatePayrollRequest:
     def __init__(self, data):
@@ -29,11 +32,15 @@ class UpdatePayrollRequest:
         self.bonus1 = data.get("bonus1")
         self.bonus2 = data.get("bonus2")
 
-    def has_employee_id(self):
-        return self.employee_id is not None
-    def has_batch(self):
-        return self.batch is not None
+    def is_valid(self):
 
+        if not self.employee_id:
+            return False, "Employee ID not provided"
+        if not self.batch:
+            return False, "Batch not provided"
+        
+        return True, None
+    
     def has_any_updates(self):
         return any([self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2])
 
@@ -42,9 +49,12 @@ class DeletePayrollRequest:
     def __init__(self, data):
         self.employee_id = data.get("employee_id")
         self.batch = data.get("batch")
-
+    
     def is_valid(self):
-        return self.employee_id and self.batch is not None
+        if not ([self.username]):
+            return False, "No username"
+        
+        return True, None
 
 
 class PayrollResponse:
@@ -77,7 +87,6 @@ class PayrollResponse:
             "bonus1": self.bonus1,
             "bonus2": self.bonus2
         }
-
 
 class PayrollListResponse:
     @staticmethod

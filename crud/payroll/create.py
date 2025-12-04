@@ -1,3 +1,4 @@
+from flask import current_app
 from database import db
 from models import Payroll
 from sqlalchemy.exc import IntegrityError
@@ -28,10 +29,10 @@ def create_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
         return create_query
     
     except IntegrityError:
-        print("raising exception for integrity")
+        current_app.logger.error("raising exception for integrity")
         raise
 
     except Exception:
-        print("raising exception for unknown error")
+        current_app.logger.error("raising exception for unknown error")
         raise
 

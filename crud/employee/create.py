@@ -1,3 +1,4 @@
+from flask import current_app
 from database import db
 from models import Employee
 from sqlalchemy.exc import IntegrityError
@@ -29,9 +30,10 @@ def create_employee_crud(name, email, username, password, role):
         return create_query
 
     except IntegrityError:
-        print("raising exception for integrity")
+        current_app.logger.error("raising exception for integrity")
         raise
     
+    
     except Exception:
-        print("raising exception for unknown error")
+        current_app.logger.error("raising exception for unknown error")
         raise

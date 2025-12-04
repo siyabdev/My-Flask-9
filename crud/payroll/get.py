@@ -1,3 +1,4 @@
+from flask import current_app
 from database import db
 from utils.utils import get_payroll
 from models import Payroll
@@ -10,7 +11,7 @@ def get_payroll_crud(employee_id, batch):
         return payroll
     
     except Exception as error:
-        print(f"error:{error}")
+        current_app.logger.error("Exceptional error")
         return error
 
 #Get all payrolls
@@ -20,6 +21,7 @@ def get_payrolls_crud():
         db.session.commit()
         print(f"All payrolls:{payrolls}")
         return payrolls
+    
     except Exception as error:
-        print(f"error:{error}")
+        current_app.logger.error("EXceptional error")
         return error

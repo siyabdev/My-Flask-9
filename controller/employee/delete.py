@@ -10,11 +10,13 @@ delete_bp = Blueprint("delete_bp", __name__, url_prefix="/employee")
 @delete_bp.route("/delete", methods=["DELETE"])
 def delete_employee():
     data = DeleteEmployeeRequest(request.json)
+    valid, message = data.is_valid()
 
-    if not data.is_valid():
-        current_app.logger.error("Username required.")
-        return jsonify({"error": "Username required"}), 400
+    if not valid:
+        current_app.logger.error(f"Schema error. {message}")
+        return jsonify({"error": f"Schema error. {message}"}), 400
 
+    
     employee_by_username = get_employee(data.username)
 
     if not employee_by_username:

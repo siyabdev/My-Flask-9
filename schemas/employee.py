@@ -68,8 +68,11 @@ class DeleteEmployeeRequest:
         self.username = data.get("username")
 
     def is_valid(self):
-        return self.username is not None
-
+        if not ([self.username]):
+            return False, "No username"
+        
+        return True, None
+    
 class EmployeeResponse:
     def __init__(self, employee):
         self.id = employee.id

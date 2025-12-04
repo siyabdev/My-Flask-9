@@ -10,9 +10,11 @@ payroll_delete_bp = Blueprint("payroll_delete_bp", __name__, url_prefix="/payrol
 @payroll_delete_bp.route("/delete", methods=["DELETE"])
 def delete_payroll():
     data = DeletePayrollRequest(request.json)
+    valid, message = data.is_valid
 
-    if not data.is_valid():
-        return jsonify({"error": "Employee Id and Batch required"}), 400
+    if not valid:
+        current_app.logger.error({"error": f"Schema error. {message}"}), 400
+        return jsonify({"error": f"Schema error. {message}"}), 400
 
     payroll = get_payroll(data.employee_id, data.batch)
 

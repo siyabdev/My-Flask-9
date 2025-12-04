@@ -10,6 +10,11 @@ payroll_create_bp = Blueprint("payroll_create_bp", __name__, url_prefix="/payrol
 @payroll_create_bp.route("/create", methods=["POST"])
 def create_payroll():
     data = CreatePayrollRequest(request.json)
+    valid, message = data.is_valid
+
+    if not valid:
+        current_app.logger.error({"error": f"Schema error. {message}"}), 400
+        return jsonify({"error": f"Schema error. {message}"}), 400
 
     if not data.is_valid():
         return jsonify({"error": "Missing fields"}), 400
