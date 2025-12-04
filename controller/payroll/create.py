@@ -10,16 +10,14 @@ payroll_create_bp = Blueprint("payroll_create_bp", __name__, url_prefix="/payrol
 @payroll_create_bp.route("/create", methods=["POST"])
 def create_payroll():
     data = CreatePayrollRequest(request.json)
-    valid, message = data.is_valid
+    valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error({"error": f"Schema error. {message}"}), 400
+        current_app.logger.error(f"Schema error. {message}"), 400
         return jsonify({"error": f"Schema error. {message}"}), 400
 
-    if not data.is_valid():
-        return jsonify({"error": "Missing fields"}), 400
-
     checking_payroll = get_payroll(data.employee_id, data.batch)
+
     if checking_payroll: 
         current_app.logger.info("Payroll already exists.")
         return jsonify({
@@ -43,12 +41,14 @@ def create_payroll():
         )
         current_app.logger.info("Payroll created.")
         return jsonify({
-            "code": "PAYROLL_CREATED",
+            "CODE": "PAYROLL_CREATED",
             "data": PayrollResponse(new_payroll).to_dict()
         }), 201
 
     except IntegrityError as error:
-        return jsonify({"code": "INTEGRITY_ERROR", "message": str(error)}), 409
+        current_app.logger.error("Integrity error")
+        return jsonify({"CODE": "INTEGRITY_ERROR", "message": str(error)}), 409
 
     except Exception:
-        return jsonify({"code": "ERROR"}), 500
+        current_app.logger.error("Exceptional error")
+        return jsonify({"CODE": "EXCEPTIONAL_ERROR"}), 500

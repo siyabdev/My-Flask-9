@@ -14,7 +14,7 @@ def create_employee():
     valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error(f"Schema error. {message}")
+        current_app.logger.error(f"Schema error. {message}"),400
         return jsonify({"error": f"Schema error. {message}"}), 400
     
     

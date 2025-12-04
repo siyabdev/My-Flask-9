@@ -51,8 +51,8 @@ class DeletePayrollRequest:
         self.batch = data.get("batch")
     
     def is_valid(self):
-        if not ([self.username]):
-            return False, "No username"
+        if not ([self.employee_id, self.batch]):
+            return False, "No Employee ID and Batch provided"
         
         return True, None
 

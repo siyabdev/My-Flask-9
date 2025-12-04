@@ -10,18 +10,11 @@ payroll_update_bp = Blueprint("payroll_update_bp", __name__, url_prefix="/payrol
 @payroll_update_bp.route("/update", methods=["PUT"])
 def update_payroll():
     data = UpdatePayrollRequest(request.json)
-    valid, message = data.is_valid
+    valid, message = data.is_valid()
 
     if not valid:
         current_app.logger.error({"error": f"Schema error. {message}"}), 400
         return jsonify({"error": f"Schema error. {message}"}), 400
-
-    if not data.has_employee_id() or not data.has_batch:
-        current_app.logger.error("Essenials required.")
-        return jsonify({
-            "code": "ESSENTIALS_REQUIRED", 
-            "error": "Employee_id and Batch required"
-            }), 400
 
     if not data.has_any_updates():
         current_app.logger.error("Data missing.")
