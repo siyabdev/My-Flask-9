@@ -1,9 +1,9 @@
 import enum
 
 class RoleType(enum.Enum):
-    ADMIN = 'admin'
-    MANAGER = 'manager'
-    GUEST = 'guest'
+    admin = 'admin'
+    manager = 'manager'
+    guest = 'guest'
 
 class CreateEmployeeRequest:
     def __init__(self, data):

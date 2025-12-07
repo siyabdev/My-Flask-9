@@ -1,12 +1,27 @@
 from database import db
+from sqlalchemy import UniqueConstraint, CheckConstraint, Enum
+from base import BaseModel
+import enum
 
-class Employee(db.Model):
+class RoleEnum(enum.Enum):
+    admin = "admin"
+    manager = "manager"
+    guest = "guest"
+
+class Employee(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    username = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(120), nullable=False)
-    role = db.Column(db.String(20), nullable=False, default="guest")
+    role = db.Column(Enum(RoleEnum), nullable=False, default=RoleEnum.guest)
+
+    __table_args__ = (
+        UniqueConstraint("email", name="unique_employee_email"),
+        UniqueConstraint("username", name="unique_employee_username"),
+        CheckConstraint("length(username) > 6", name="check_username_min_length"),
+        CheckConstraint("length(password) > 8", name="check_password_min_length"),
+    )
 
     def to_dict(self):
         return {
@@ -22,10 +37,10 @@ class Employee(db.Model):
     def to_dict_list(cls, employees):
         return [emp.to_dict() for emp in employees]
 
-class Payroll(db.Model):
+class Payroll(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=False)
-    batch = db.Column(db.String(20), nullable=False, unique = True)
+    batch = db.Column(db.String(20), nullable=False)
     basic_salary = db.Column(db.Integer, nullable = False)
     hourly_rate = db.Column(db.Integer, nullable=False)
     monthly_hours = db.Column(db.Integer, nullable = False)
@@ -35,6 +50,11 @@ class Payroll(db.Model):
     leaves = db.Column(db.Integer, nullable = False) 
     bonus1 = db.Column(db.Integer, nullable = False)
     bonus2 = db.Column(db.Integer, nullable = False)
+
+    __table_args__ = (
+        UniqueConstraint("employee_id", "batch", name="unique_payroll_emp_batch"),
+    )
+
 
     def to_dict(self):
         return {

@@ -27,17 +27,17 @@ def create_payroll():
     
     try:
         new_payroll = create_payroll_crud(
-        employee_id = data.employee_id,
-        batch = data.batch,
-        basic_salary = data.basic_salary,
-        hourly_rate = data.hourly_rate,
-        monthly_hours = data.monthly_hours,
-        worked_hours = data.worked_hours,
-        early = data.early,
-        late = data.late,
-        leaves = data.leaves,
-        bonus1 = data.bonus1,
-        bonus2 = data.bonus2
+            employee_id = data.employee_id,
+            batch = data.batch,
+            basic_salary = data.basic_salary,
+            hourly_rate = data.hourly_rate,
+            monthly_hours = data.monthly_hours,
+            worked_hours = data.worked_hours,
+            early = data.early,
+            late = data.late,
+            leaves = data.leaves,
+            bonus1 = data.bonus1,
+            bonus2 = data.bonus2
         )
         current_app.logger.info("Payroll created.")
         return jsonify({

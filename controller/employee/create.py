@@ -4,7 +4,6 @@ from utils.utils import get_employee
 from sqlalchemy.exc import IntegrityError
 from schemas.employee import CreateEmployeeRequest, EmployeeResponse
 
-
 create_bp = Blueprint("create_bp", __name__, url_prefix="/employee")
 
 #Create employee
@@ -36,7 +35,7 @@ def create_employee():
             role=data.role
         )
 
-        current_app.logger.info("employee created")
+        current_app.logger.info(f"employee created: {new_employee}")
         return jsonify({
             "code": "EMPLOYEE_CREATED",
             "data": EmployeeResponse(new_employee).to_dict()
