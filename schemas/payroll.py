@@ -16,6 +16,9 @@ class CreatePayrollRequest:
         if not all([self.employee_id, self.batch, self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2]):
             return False, "Missing required fields"
         
+        if len(self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours) > 0:
+            return False, "Basic salary, hourly rate, monthly hours and worked hours should be greater than 0"
+        
         return True, None
 
 class UpdatePayrollRequest:
@@ -38,6 +41,9 @@ class UpdatePayrollRequest:
             return False, "Employee ID not provided"
         if not self.batch:
             return False, "Batch not provided"
+        
+        if len(self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours) > 0:
+            return False, "Basic salary, hourly rate, monthly hours and worked hours should be greater than 0"
         
         return True, None
     
