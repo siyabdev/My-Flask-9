@@ -19,7 +19,6 @@ def delete_employee():
             "error": message
         }), 400
 
-    
     employee_by_username = get_employee(data.username)
 
     if not employee_by_username:

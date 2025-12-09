@@ -42,8 +42,8 @@ class UpdatePayrollRequest:
         if not self.batch:
             return False, "Batch not provided"
         
-        if len(self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours) > 0:
-            return False, "Basic salary, hourly rate, monthly hours and worked hours should be greater than 0"
+        if len(self.basic_salary) > 0:
+            return False, "Basic salary should be greater than 0"
         
         return True, None
     
