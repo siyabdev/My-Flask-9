@@ -14,7 +14,10 @@ def delete_employee():
 
     if not valid:
         current_app.logger.error(f"Schema error. {message}")
-        return jsonify({"error": f"Schema error. {message}"}), 400
+        return jsonify({
+            "code": "SCHEMA_ERROR",
+            "error": message
+        }), 400
 
     
     employee_by_username = get_employee(data.username)

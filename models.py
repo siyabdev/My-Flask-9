@@ -22,7 +22,6 @@ class Employee(BaseModel):
         CheckConstraint("length(username) > 6", name="check_username_min_length"),
         CheckConstraint("length(password) > 8", name="check_password_min_length"),
     )
-
     def to_dict(self):
         return {
             "id": self.id,
@@ -31,7 +30,7 @@ class Employee(BaseModel):
             "username": self.username,
             "password": self.password,
             "role": self.role
-        }
+    }
 
     @classmethod
     def to_dict_list(cls, employees):
@@ -54,7 +53,6 @@ class Payroll(BaseModel):
     __table_args__ = (
         UniqueConstraint("employee_id", "batch", name="unique_payroll_emp_batch"),
     )
-
 
     def to_dict(self):
         return {

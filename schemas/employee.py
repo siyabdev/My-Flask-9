@@ -15,7 +15,7 @@ class CreateEmployeeRequest:
 
     def is_valid(self):
         # Required fields
-        if not all([self.name, self.email, self.username, self.password]):
+        if not all([self.name, self.email, self.username, self.password, self.role]):
             return False, "Missing required fields"
 
         # Validate username length
@@ -62,7 +62,6 @@ class UpdateEmployeeRequest:
     def has_any_updates(self):
         return any([self.name, self.email, self.password, self.role])
 
-
 class DeleteEmployeeRequest:
     def __init__(self, data):
         self.username = data.get("username")
@@ -79,7 +78,8 @@ class EmployeeResponse:
         self.name = employee.name
         self.email = employee.email
         self.username = employee.username
-        self.role = employee.role
+        self.password = employee.password
+        self.role = employee.role.value
 
     def to_dict(self):
         return {
@@ -87,6 +87,7 @@ class EmployeeResponse:
             "name": self.name,
             "email": self.email,
             "username": self.username,
+            "password": self.password,
             "role": self.role
         }
 

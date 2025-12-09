@@ -18,7 +18,6 @@ def get_employee():
         }), 403
     
     employee = get_employee_crud(username=username)
-
     print(f"employee:{employee}")
 
     try:
@@ -62,4 +61,3 @@ def get_all_employees():
             "CODE":"EXCEPTIONAL_ERROR_OCCURED",
             "message":"Exceptional error occured for getting all employees, please try again"
         })
-    

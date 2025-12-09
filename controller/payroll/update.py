@@ -14,7 +14,10 @@ def update_payroll():
 
     if not valid:
         current_app.logger.error({"error": f"Schema error. {message}"}), 400
-        return jsonify({"error": f"Schema error. {message}"}), 400
+        return jsonify({
+            "code": "SCHEMA_ERROR",
+            "error": message
+        }), 400
 
     if not data.has_any_updates():
         current_app.logger.error("Data missing.")

@@ -14,7 +14,10 @@ def create_payroll():
 
     if not valid:
         current_app.logger.error(f"Schema error. {message}"), 400
-        return jsonify({"error": f"Schema error. {message}"}), 400
+        return jsonify({
+            "code": "SCHEMA_ERROR",
+            "error": message
+        }), 400
 
     checking_payroll = get_payroll(data.employee_id, data.batch)
 

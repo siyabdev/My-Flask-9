@@ -14,7 +14,10 @@ def delete_payroll():
 
     if not valid:
         current_app.logger.error(f"Schema error. {message}"), 400
-        return jsonify({"error": f"Schema error. {message}"}), 400
+        return jsonify({
+            "code": "SCHEMA_ERROR",
+            "error": message
+        }), 400
 
     payroll = get_payroll(data.employee_id, data.batch)
 
@@ -28,11 +31,11 @@ def delete_payroll():
         delete_query = delete_payroll_crud(employee_id=data.employee_id, batch=data.batch)
         
         if delete_query:
-                current_app.logger.info("Payroll deleted.")
-                return jsonify({
-                        "CODE": "PAYROLL_DELETED",
-                        "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted"
-                    })
+            current_app.logger.info("Payroll deleted.")
+            return jsonify({
+                    "CODE": "PAYROLL_DELETED",
+                    "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted"
+                })
     except IntegrityError as error:
         return jsonify({
             "CODE": "INTEGRITY_ERROR",
@@ -40,4 +43,5 @@ def delete_payroll():
         }), 409
     
     except Exception:
-        return jsonify({"CODE": "ERROR"}), 500
+        current_app.logger.error("Exceptional error")
+        return jsonify({"CODE": "EXCEPTIONAL_ERROR"}), 500
