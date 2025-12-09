@@ -16,8 +16,14 @@ class CreatePayrollRequest:
         if not all([self.employee_id, self.batch, self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2]):
             return False, "Missing required fields"
         
-        if len(self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours) > 0:
-            return False, "Basic salary, hourly rate, monthly hours and worked hours should be greater than 0"
+        if len(self.basic_salary) < 0:
+            return False, "Basic salary should be greater than 0"
+        if len(self.hourly_rate) < 0:
+            return False, "Hourly rate should be greater than 0"
+        if len(self.monthly_hours) < 0:
+            return False, "Monthly hours should be greater than 0"
+        if len(self.worked_hours) < 0:
+            return False, "Worked hours should be greater than 0"
         
         return True, None
 
@@ -41,10 +47,10 @@ class UpdatePayrollRequest:
             return False, "Employee ID not provided"
         if not self.batch:
             return False, "Batch not provided"
-        
-        if len(self.basic_salary) > 0:
-            return False, "Basic salary should be greater than 0"
-        
+             
+        if len(self.basic_salary or self.hourly_rate or self.monthly_hours or self.worked_hours) < 0:
+            return False, "Basic salary, hourly rate, monthly hours or worked hours should be greater than 0"
+                
         return True, None
     
     def has_any_updates(self):
