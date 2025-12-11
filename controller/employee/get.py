@@ -1,11 +1,13 @@
 from flask import Blueprint, request, jsonify, current_app
 from crud.employee.get import get_employee_crud, get_employees_crud
 from schemas.employee import EmployeeResponse, EmployeeListResponse
+from auth import require_auth
 
 get_bp = Blueprint("get_bp", __name__, url_prefix="/employee")
 
 #Get employee
 @get_bp.route("/get", methods=["GET"])
+@require_auth
 def get_employee():
     data = request.json
     username = data.get("username")

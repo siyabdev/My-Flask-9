@@ -15,6 +15,9 @@ from controller.payroll.delete import payroll_delete_bp
 from controller.payroll.get import payroll_get_bp
 from controller.payroll.update import payroll_update_bp
 
+# Auth controller
+from controller.login import login_bp
+
 def create_app():
     app = Flask(__name__)
 
@@ -44,6 +47,9 @@ def create_app():
     app.register_blueprint(payroll_delete_bp)
     app.register_blueprint(payroll_get_bp)
     app.register_blueprint(payroll_update_bp)
+
+    # Auth
+    app.register_blueprint(login_bp)
 
     @app.route("/")
     def home():
