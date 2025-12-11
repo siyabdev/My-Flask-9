@@ -3,11 +3,13 @@ from crud.payroll.delete import delete_payroll_crud
 from utils.utils import get_payroll
 from sqlalchemy.exc import IntegrityError
 from schemas.payroll import DeletePayrollRequest
+from auth import require_auth
 
 payroll_delete_bp = Blueprint("payroll_delete_bp", __name__, url_prefix="/payroll")
 
 #Delete payroll
 @payroll_delete_bp.route("/delete", methods=["DELETE"])
+@require_auth
 def delete_payroll():
     data = DeletePayrollRequest(request.json)
     valid, message = data.is_valid()

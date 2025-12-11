@@ -3,11 +3,13 @@ from crud.payroll.create import create_payroll_crud
 from utils.utils import get_payroll
 from sqlalchemy.exc import IntegrityError
 from schemas.payroll import CreatePayrollRequest, PayrollResponse
+from auth import require_auth
 
 payroll_create_bp = Blueprint("payroll_create_bp", __name__, url_prefix="/payroll")
 
 #Create payroll
 @payroll_create_bp.route("/create", methods=["POST"])
+@require_auth
 def create_payroll():
     data = CreatePayrollRequest(request.json)
     valid, message = data.is_valid()

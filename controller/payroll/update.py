@@ -3,11 +3,13 @@ from crud.payroll.update import update_payroll_crud
 from utils.utils import get_payroll
 from sqlalchemy.exc import IntegrityError
 from schemas.payroll import UpdatePayrollRequest, PayrollResponse
+from auth import require_auth
 
 payroll_update_bp = Blueprint("payroll_update_bp", __name__, url_prefix="/payroll")
 
 #Update payroll
 @payroll_update_bp.route("/update", methods=["PUT"])
+@require_auth
 def update_payroll():
     data = UpdatePayrollRequest(request.json)
     valid, message = data.is_valid()

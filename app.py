@@ -16,7 +16,7 @@ from controller.payroll.get import payroll_get_bp
 from controller.payroll.update import payroll_update_bp
 
 # Auth controller
-from controller.login import login_bp
+from controller.login.login import login_bp
 
 def create_app():
     app = Flask(__name__)
