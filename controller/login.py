@@ -8,11 +8,6 @@ login_bp = Blueprint("login_bp", __name__)
 
 @login_bp.route("/login", methods=["POST"])
 def login():
-    """
-    Login endpoint
-    Checks username and password, returns JWT token if valid
-    """
-    # Get and validate request data
     data = LoginRequest(request.json)
     valid, message = data.is_valid()
     
@@ -23,7 +18,6 @@ def login():
             "error": message
         }), 400
     
-    # Verify username and password
     employee = verify_login(data.username, data.password)
     
     if not employee:
@@ -33,16 +27,13 @@ def login():
             "message": "Invalid username or password"
         }), 401
     
-    # Generate JWT token (valid for 24 hours)
     token = generate_token(employee.id, employee.username)
     
     current_app.logger.info(f"Login successful for username: {data.username}")
     
-    # Return token and user info
     response = LoginResponse(token, employee.id, employee.username)
     return jsonify({
         "code": "LOGIN_SUCCESS",
         "message": "Login successful",
         "data": response.to_dict()
     }), 200
-

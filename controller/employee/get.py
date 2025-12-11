@@ -43,6 +43,7 @@ def get_employee():
 
 #Get all employees
 @get_bp.route("/all", methods=["GET"])
+@require_auth
 def get_all_employees():
      
     try:
