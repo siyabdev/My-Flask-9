@@ -39,7 +39,7 @@ class Employee(BaseModel):
 class Payroll(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     employee_id = db.Column(db.Integer, db.ForeignKey('employee.id'), nullable=False)
-    batch = db.Column(db.String(20), nullable=False)
+    batch = db.Column(db.Integer, nullable=False)
     basic_salary = db.Column(db.Integer, nullable = False)
     hourly_rate = db.Column(db.Integer, nullable=False)
     monthly_hours = db.Column(db.Integer, nullable = False)
