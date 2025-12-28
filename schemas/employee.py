@@ -91,6 +91,17 @@ class EmployeeResponse:
             "role": self.role
         }
 
+class EmployeeShortResponse:
+    def __init__(self, employee):
+        self.id= employee.id
+        self.name = employee.name
+    
+    def to_dict(self):
+        return{
+            "id" : self.id,
+            "name" : self.name
+        }
+    
 class EmployeeListResponse:
     @staticmethod
     def build(employees):

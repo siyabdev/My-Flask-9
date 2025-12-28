@@ -24,3 +24,14 @@ def get_employees_crud():
     except Exception as error:
         current_app.logger.error("Exceptional error")
         return error
+
+#Get short details (employee)
+def get_employee_short_crud(username):
+    try:
+        employee = get_employee(username)
+        print(f"employee:{employee}")
+        return employee
+    
+    except Exception as error:
+        current_app.logger.error("Exceptional error")
+        return error

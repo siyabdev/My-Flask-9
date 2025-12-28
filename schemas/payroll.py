@@ -56,7 +56,6 @@ class UpdatePayrollRequest:
     def has_any_updates(self):
         return any([self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2])
 
-
 class DeletePayrollRequest:
     def __init__(self, data):
         self.employee_id = data.get("employee_id")
@@ -67,7 +66,6 @@ class DeletePayrollRequest:
             return False, "No Employee ID and Batch provided"
         
         return True, None
-
 
 class PayrollResponse:
     def __init__(self, payroll):
@@ -98,6 +96,17 @@ class PayrollResponse:
             "leaves": self.leaves,
             "bonus1": self.bonus1,
             "bonus2": self.bonus2
+        }
+
+class PayrollShortResponse:
+    def __init__(self, payroll):
+        self.id = payroll.id
+        self.batch = payroll.batch
+    
+    def to_dict(self):
+        return{
+            "id" : self.id,
+            "batch" : self.batch
         }
 
 class PayrollListResponse:
