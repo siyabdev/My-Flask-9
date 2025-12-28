@@ -5,7 +5,6 @@ from sqlalchemy.exc import IntegrityError
 from schemas.employee import CreateEmployeeRequest, EmployeeResponse
 from auth import require_auth
 
-
 create_bp = Blueprint("create_bp", __name__, url_prefix="/employee")
 
 #Create employee
