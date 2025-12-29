@@ -17,20 +17,20 @@ def get_employee_crud(username):
 #Get all employees
 def get_employees_crud():
     try:
-        employee = Employee.query.all()
+        employees = Employee.query.all()
         db.session.commit()
-        print(f"employee all:{employee}")
-        return employee
+        return employees
+    
     except Exception as error:
         current_app.logger.error("Exceptional error")
         return error
 
 #Get short details (employee)
-def get_employee_short_crud(username):
+def get_employee_short_crud():
     try:
-        employee = get_employee(username)
-        print(f"employee:{employee}")
-        return employee
+        employees = Employee.query.all()
+        db.session.commit()
+        return employees
     
     except Exception as error:
         current_app.logger.error("Exceptional error")

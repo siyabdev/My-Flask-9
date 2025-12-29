@@ -98,17 +98,6 @@ class PayrollResponse:
             "bonus2": self.bonus2
         }
 
-class PayrollShortResponse:
-    def __init__(self, payroll):
-        self.id = payroll.id
-        self.batch = payroll.batch
-    
-    def to_dict(self):
-        return{
-            "id" : self.id,
-            "batch" : self.batch
-        }
-
 class PayrollListResponse:
     @staticmethod
     def build(payrolls):
