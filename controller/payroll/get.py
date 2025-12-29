@@ -41,7 +41,7 @@ def get_payroll():
                 "message":f"Exceptional error occured for getting payroll {employee_id} '{batch}', please try again"
             })
     
-#Get all employees
+#Get all payrolls
 @payroll_get_bp.route("/all", methods=["GET"])
 @require_auth
 def get_all_payrolls():

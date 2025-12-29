@@ -72,7 +72,8 @@ def get_employee_short():
         employees = get_employee_short_crud()
 
         if employees:
-            return EmployeeShortResponse(employees).to_dict()
+            return EmployeeShortResponse.from_list(employees)
+
         else:
             current_app.logger.error("No employees found")
             return jsonify({

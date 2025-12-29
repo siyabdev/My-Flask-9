@@ -101,7 +101,10 @@ class EmployeeShortResponse:
             "id" : self.id,
             "name" : self.name
         }
-    
+    @staticmethod
+    def from_list(employees):
+        return [EmployeeShortResponse(emp).to_dict() for emp in employees]
+        
 class EmployeeListResponse:
     @staticmethod
     def build(employees):

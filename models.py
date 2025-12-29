@@ -8,47 +8,47 @@ class RoleEnum(enum.Enum):
     manager = "manager"
     guest = "guest"
 
-class CompanyEnum(enum.Enum):
-    orion = "orion"
-    lynx = "lynx"
-    abacars= "abacars"
+#class CompanyEnum(enum.Enum):
+    #orion = "orion"
+    #lynx = "lynx"
+    #abacars= "abacars"
 
-class DepartmentEnum(enum.Enum):
-    management = "management"
-    maintenance = "maintenance"
-    covering = "covering"
+#class DepartmentEnum(enum.Enum):
+    #management = "management"
+    #maintenance = "maintenance"
+    #covering = "covering"
 
-class ContractEnum(enum.Enum):
-    cover = "cover"
-    manual = "manual"
-    management = "management"
+#class ContractEnum(enum.Enum):
+    #cover = "cover"
+    #manual = "manual"
+    #management = "management"
 
 class Employee(BaseModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), nullable=False)
     username = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(120), nullable=False)
-    father_name = db.Column(db.String(120), nullable=False)
-    date_of_birth = db.Column(db.Integer, nullable=False)
-    cnic = db.Column(db.Integer, nullable=False)
+    #father_name = db.Column(db.String(120), nullable=False)
+    #date_of_birth = db.Column(db.Integer, nullable=False)
+    #cnic = db.Column(db.Integer, nullable=False)
     email = db.Column(db.String(120), nullable=False)
     role = db.Column(Enum(RoleEnum), nullable=False, default=RoleEnum.guest)
-    main_phone = db.Column(db.Integer, nullable=False) 
-    secondary_phone = db.Column(db.Integer)
-    address = db.Column(db.String(120), nullable=False)
-    company = db.Column(Enum(CompanyEnum), nullable=False)
-    department = db.Column(Enum(DepartmentEnum), nullable = False)
-    contract = db.Column(Enum(ContractEnum), nullable = False)
-    join_date = db.Column(db.Integer, nullable=False)
+    #main_phone = db.Column(db.Integer, nullable=False) 
+    #secondary_phone = db.Column(db.Integer)
+    #address = db.Column(db.String(120), nullable=False)
+    #company = db.Column(Enum(CompanyEnum), nullable=False)
+    #department = db.Column(Enum(DepartmentEnum), nullable = False)
+    #contract = db.Column(Enum(ContractEnum), nullable = False)
+    #join_date = db.Column(db.Integer, nullable=False)
 
 
     __table_args__ = (
         UniqueConstraint("email", name="unique_employee_email"),
         UniqueConstraint("username", name="unique_employee_username"),
-        UniqueConstraint("cnic", name="unique_employee_cnic"),
-        UniqueConstraint("main_phone", name="unique_employee_main_phone"),
-        CheckConstraint("length(username) > 6", name="check_username_min_length"),
-        CheckConstraint("length(password) > 8", name="check_password_min_length"),
+        #UniqueConstraint("cnic", name="unique_employee_cnic"),
+        #UniqueConstraint("main_phone", name="unique_employee_main_phone"),
+        #CheckConstraint("length(username) > 6", name="check_username_min_length"),
+        #CheckConstraint("length(password) > 8", name="check_password_min_length"),
     )
     def to_dict(self):
         return {
