@@ -16,15 +16,15 @@ class CreateEmployeeRequest:
     def is_valid(self):
         # Required fields
         if not all([self.name, self.email, self.username, self.password, self.role]):
-            return False, "Missing required fields"
+            return False, "Missing required fields."
 
         # Validate username length
         if len(self.username) < 6:
-            return False, "Username must be at least 6 characters long"
+            return False, "Username must be at least 6 characters long."
 
         # Validate password length
         if len(self.password) < 6:
-            return False, "Password must be at least 6 characters long"
+            return False, "Password must be at least 6 characters long."
 
         # Validate role against enum
         if self.role not in [role.value for role in RoleType]:
@@ -43,15 +43,15 @@ class UpdateEmployeeRequest:
     def is_valid(self):
 
         if not self.username:
-            return False, "Username not provided"
+            return False, "Username not provided."
 
         # Validate username length
         if len(self.username) < 6:
-            return False, "Username must be at least 6 characters long"
+            return False, "Username must be at least 6 characters long."
 
         # Validate password length
         if len(self.password) < 6:
-            return False, "Password must be at least 6 characters long"
+            return False, "Password must be at least 6 characters long."
 
         # Validate role against enum
         if self.role and self.role not in [role.value for role in RoleType]:
@@ -68,7 +68,7 @@ class DeleteEmployeeRequest:
 
     def is_valid(self):
         if not ([self.username]):
-            return False, "No username"
+            return False, "No username."
         
         return True, None
     
@@ -107,5 +107,5 @@ class EmployeeShortResponse:
         
 class EmployeeListResponse:
     @staticmethod
-    def build(employees):
+    def from_list(employees):
         return [EmployeeResponse(emp).to_dict() for emp in employees]
