@@ -15,34 +15,40 @@ def delete_employee():
     valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error(f"Schema error. {message}")
+        current_app.logger.error(f"Schema error {message}.")
         return jsonify({
             "code": "SCHEMA_ERROR",
-            "error": message
+            "message": f"Schema error occured {message}."
         }), 400
 
     employee_by_username = get_employee(data.username)
 
     if not employee_by_username:
-        current_app.logger.info("Employee doesnt exist.")
+        current_app.logger.info(f"Employee {employee_by_username} doesnt exist.")
         return jsonify({
-            "CODE": "EMPLOYEE_DOESNT_EXIST",
-            "message": "Employee doesnt exist, please enter a valid username"
+            "code": "EMPLOYEE_DOESNT_EXIST",
+            "message": f"Employee '{data.username}' doesnt exist, please enter a valid username."
         })
 
     try:
         delete_query = delete_employee_crud(data.username)
         if delete_query:
-            current_app.logger.info("Employee deleted.")
+            current_app.logger.info(f"Employee '{data.username}' deleted.")
             return jsonify({
-                "CODE": "EMPLOYEE_DELETED",
-                "message": f"Employee '{data.username}' is deleted"
+                "code": "EMPLOYEE_DELETED",
+                "message": f"Employee '{data.username}' is deleted."
             }), 200
+        
     except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
-            "CODE": "INTEGRITY_ERROR",
-            "message": str(error)
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
         }), 409
-    
-    except Exception:
-        return jsonify({"CODE": "ERROR"}), 500
+      
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code": "EXCEPTIONAL_ERROR",
+            "message": f"Exceptional error occured {e}."
+        }), 500

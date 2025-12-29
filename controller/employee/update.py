@@ -18,37 +18,42 @@ def update_employee():
         current_app.logger.error(f"Schema error. {message}")
         return jsonify({
             "code": "SCHEMA_ERROR",
-            "error": message
+            "message": f"Schema error occured {message}."
         }), 400
 
     if not data.has_any_updates():
         current_app.logger.error("Data missing.")
         return jsonify({
             "code": "DATA_MISSING", 
-            "error": "Required fields for data update not provided"
-            }), 400
+            "message": "Required fields for data update are not provided."
+        }), 400
     
     employee = get_employee(data.username)
     if not employee:
-        current_app.logger.error("Employee not found.")
+        current_app.logger.error(f"Employee {employee} not found.")
         return jsonify({
             "code": "EMPLOYEE_NOT_FOUND", 
-            "error": "Required fields for data update not provided"
-            }), 404
+            "message": f"Employee {employee} not found."
+        }), 404
 
     try:        
         updated_employee = update_employee_crud(username=data.username, name=data.name, password=data.password, role=data.role, email=data.email)
-        current_app.logger.info("Employee updated.")
+        current_app.logger.info(f"Employee updated {updated_employee}.")
         return jsonify({
             "code": "EMPLOYEE_UPDATED",
             "data": EmployeeResponse(updated_employee).to_dict()
         }), 200
 
     except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
             "code": "INTEGRITY_ERROR",
-            "message": str(error)
+            "message": f"Integrity error {error} occured."
         }), 409
     
-    except Exception:
-        return jsonify({"code": "ERROR"}), 500
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code": "EXCEPTIONAL_ERROR",
+            "message": f"Exceptional error {e} occured."
+        }), 500

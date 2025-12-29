@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from crud.employee.get import get_employee_crud, get_employees_crud, get_employee_short_crud
 from schemas.employee import EmployeeResponse, EmployeeListResponse, EmployeeShortResponse
+from sqlalchemy.exc import IntegrityError
 from auth import require_auth
 
 get_bp = Blueprint("get_bp", __name__, url_prefix="/employee")
@@ -13,32 +14,40 @@ def get_employee():
     username = data.get("username")
 
     if not username:
-        current_app.logger.error("No username provided for employee")
+        current_app.logger.error(f"No username '{username}' provided for employee.")
         return jsonify({
-            "CODE":"NO_USERNAME_PROVIDED",
-            "message":"Please enter username"
+            "code": "NO_USERNAME_PROVIDED",
+            "message": f"Please enter username '{username}'."
         }), 403
     
     employee = get_employee_crud(username=username)
 
     try:
         if employee:
+            current_app.logger.info(f"Employee {employee} response returned.")
             return EmployeeResponse(employee).to_dict()
         
         else:
-            current_app.logger.error("Username is not registered")
+            current_app.logger.error(f"Username '{username}' not registered.")
             return jsonify({
-                "CODE":"USERNAME_DOESNT_EXIST",
-                "message": f"Please try another username, {username} is not registered"
+                "code":"USERNAME_DOESNT_EXIST",
+                "message": f"Username '{username}' is not registered, please try another."
             }), 403
+    
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
+        return jsonify({
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
 
-    except Exception as error:
-            print(f"error:{error}")
-            current_app.logger.error("Exceptional error.")
+    except Exception as e:
+            current_app.logger.error(f"Exceptional error {e}.")
             return jsonify({
-                "CODE":"EXCEPTIONAL_ERROR_OCCURED",
-                "message":f"Exceptional error occured for getting employee '{username}', please try again"
+                "code":"EXCEPTIONAL_ERROR_OCCURED",
+                "message":f"Exceptional error {e} occured. please try again."
             })
+    
 
 #Get all employees
 @get_bp.route("/all", methods=["GET"])
@@ -49,18 +58,27 @@ def get_all_employees():
          get_employees = get_employees_crud()
 
          if get_employees:
-              return EmployeeListResponse.build(get_employees)
+              current_app.logger.info(f"Employees {get_employees} response returned.")
+              return EmployeeListResponse.from_list(get_employees)
          else:
-            current_app.logger.error("No employees found")
+            current_app.logger.error("No employees found.")
             return jsonify({
-                "CODE":"NO_EMPLOYEES_FOUND",
-                "message":"No employees found, please add employee first"
+                "code":"NO_EMPLOYEES_FOUND",
+                "message":"No employees found, please add employee first."
             })
-    except Exception as error:
-        current_app.logger.error("Exceptional error.")
+    
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
-            "CODE":"EXCEPTIONAL_ERROR_OCCURED",
-            "message":"Exceptional error occured for getting all employees, please try again"
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
         })
 
 #Get short details (employee)
@@ -72,17 +90,26 @@ def get_employee_short():
         employees = get_employee_short_crud()
 
         if employees:
+            current_app.logger.info(f"Employees {employees} response returned.")
             return EmployeeShortResponse.from_list(employees)
 
         else:
             current_app.logger.error("No employees found")
             return jsonify({
-                "CODE":"NO_EMPLOYEES_FOUND",
-                "message":"No employees found, please add employee first"
+                "code":"NO_EMPLOYEES_FOUND",
+                "message":"No employees found, please add employee first."
             })
-    except Exception as error:
-        current_app.logger.error(f"Exceptional error. {error}")
+    
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
-            "CODE":"EXCEPTIONAL_ERROR_OCCURED",
-            "message":"Exceptional error occured for getting all employees, please try again"
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
         })

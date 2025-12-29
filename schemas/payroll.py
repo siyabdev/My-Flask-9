@@ -14,16 +14,16 @@ class CreatePayrollRequest:
 
     def is_valid(self):
         if not all([self.employee_id, self.batch, self.basic_salary, self.hourly_rate, self.monthly_hours, self.worked_hours, self.early, self.late, self.leaves, self.bonus1, self.bonus2]):
-            return False, "Missing required fields"
+            return False, "Missing required fields."
         
         if len(self.basic_salary) < 0:
-            return False, "Basic salary should be greater than 0"
+            return False, "Basic salary should be greater than 0."
         if len(self.hourly_rate) < 0:
-            return False, "Hourly rate should be greater than 0"
+            return False, "Hourly rate should be greater than 0."
         if len(self.monthly_hours) < 0:
-            return False, "Monthly hours should be greater than 0"
+            return False, "Monthly hours should be greater than 0."
         if len(self.worked_hours) < 0:
-            return False, "Worked hours should be greater than 0"
+            return False, "Worked hours should be greater than 0."
         
         return True, None
 
@@ -44,12 +44,12 @@ class UpdatePayrollRequest:
     def is_valid(self):
 
         if not self.employee_id:
-            return False, "Employee ID not provided"
+            return False, "Employee ID not provided."
         if not self.batch:
-            return False, "Batch not provided"
+            return False, "Batch not provided."
              
         if len(self.basic_salary or self.hourly_rate or self.monthly_hours or self.worked_hours) < 0:
-            return False, "Basic salary, hourly rate, monthly hours or worked hours should be greater than 0"
+            return False, "Basic salary, hourly rate, monthly hours or worked hours should be greater than 0."
                 
         return True, None
     
@@ -63,7 +63,7 @@ class DeletePayrollRequest:
     
     def is_valid(self):
         if not ([self.employee_id, self.batch]):
-            return False, "No Employee ID and Batch provided"
+            return False, "No Employee ID and Batch provided."
         
         return True, None
 
@@ -100,5 +100,5 @@ class PayrollResponse:
 
 class PayrollListResponse:
     @staticmethod
-    def build(payrolls):
+    def from_list(payrolls):
         return [PayrollResponse(pay).to_dict() for pay in payrolls]

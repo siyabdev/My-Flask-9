@@ -34,7 +34,7 @@ class Employee(BaseModel):
     email = db.Column(db.String(120), nullable=False)
     role = db.Column(Enum(RoleEnum), nullable=False, default=RoleEnum.guest)
     #main_phone = db.Column(db.Integer, nullable=False) 
-    #secondary_phone = db.Column(db.Integer)
+    #secondary_phone = db.Column(db.Integer, nullable=True)
     #address = db.Column(db.String(120), nullable=False)
     #company = db.Column(Enum(CompanyEnum), nullable=False)
     #department = db.Column(Enum(DepartmentEnum), nullable = False)
@@ -47,8 +47,8 @@ class Employee(BaseModel):
         UniqueConstraint("username", name="unique_employee_username"),
         #UniqueConstraint("cnic", name="unique_employee_cnic"),
         #UniqueConstraint("main_phone", name="unique_employee_main_phone"),
-        #CheckConstraint("length(username) > 6", name="check_username_min_length"),
-        #CheckConstraint("length(password) > 8", name="check_password_min_length"),
+        CheckConstraint("length(username) > 6", name="check_username_min_length"),
+        CheckConstraint("length(password) > 8", name="check_password_min_length"),
     )
     def to_dict(self):
         return {

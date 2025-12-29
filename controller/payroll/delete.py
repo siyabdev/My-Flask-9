@@ -15,35 +15,39 @@ def delete_payroll():
     valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error(f"Schema error. {message}"), 400
+        current_app.logger.error(f"Schema error {message}."), 400
         return jsonify({
             "code": "SCHEMA_ERROR",
-            "error": message
+            "message": f"Schema error occured {message}."
         }), 400
 
     payroll = get_payroll(data.employee_id, data.batch)
 
     if not payroll:
-        current_app.logger.info("Payroll doesnt exist.")
+        current_app.logger.info(f"Payroll {payroll} doesnt exist.")
         return jsonify({
-            "CODE": "PAYROLL_DOESNT_EXIST",
-            "message": f"Payroll doesnt exist, please enter a valid employee id {data.employee_id} and batch '{data.batch}'"
+            "code": "PAYROLL_DOESNT_EXIST",
+            "message": f"Payroll {payroll} doesnt exist, please enter a valid employee id {data.employee_id} and batch '{data.batch}'."
         })
     try:
         delete_query = delete_payroll_crud(employee_id=data.employee_id, batch=data.batch)
-        
         if delete_query:
-            current_app.logger.info("Payroll deleted.")
+            current_app.logger.info(f"Payroll {payroll} deleted.")
             return jsonify({
-                    "CODE": "PAYROLL_DELETED",
-                    "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted"
+                    "code": "PAYROLL_DELETED",
+                    "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted."
                 })
+    
     except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
-            "CODE": "INTEGRITY_ERROR",
-            "message": str(error)
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
         }), 409
     
-    except Exception:
-        current_app.logger.error("Exceptional error")
-        return jsonify({"CODE": "EXCEPTIONAL_ERROR"}), 500
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
+        })

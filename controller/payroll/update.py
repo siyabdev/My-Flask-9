@@ -15,40 +15,45 @@ def update_payroll():
     valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error({"error": f"Schema error. {message}"}), 400
+        current_app.logger.error({"error": f"Schema error {message}."}), 400
         return jsonify({
             "code": "SCHEMA_ERROR",
-            "error": message
+            "message": f"Schema error occured {message}."
         }), 400
 
     if not data.has_any_updates():
-        current_app.logger.error("Data missing.")
+        current_app.logger.error(f"Data {data} missing.")
         return jsonify({
             "code": "DATA_MISSING", 
-            "error": "Required fields for data update not provided"
-            }), 400
+            "message": f"Required fields for data {data} update are not provided"
+        }), 400
     
     payroll = get_payroll(data.employee_id, data.batch)
     if not payroll:
-        current_app.logger.error("Payroll not found.")
+        current_app.logger.error(f"Payroll {payroll} not found.")
         return jsonify({
             "code": "PAYROLL_NOT_FOUND", 
-            "error": "Required fields for data update not provided"
+            "message": f"Payroll {payroll} not found."
             }), 404
 
     try:
         updated_payroll = update_payroll_crud(employee_id=data.employee_id, batch=data.batch, basic_salary=data.basic_salary, hourly_rate=data.hourly_rate, monthly_hours=data.monthly_hours, worked_hours=data.worked_hours, early=data.early, late=data.late, leaves=data.leaves, bonus1=data.bonus1, bonus2=data.bonus2)
-        current_app.logger.info("Payroll updated.")
+        current_app.logger.info(f"Payroll updated {updated_payroll}.")
         return jsonify({
             "code": "PAYROLL_UPDATED",
-            "data": PayrollResponse(updated_payroll).to_dict()
+            "message": PayrollResponse(updated_payroll).to_dict()
         }), 200
     
     except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
             "code": "INTEGRITY_ERROR",
-            "message": str(error)
+            "message": f"Integrity error occured {error}."
         }), 409
     
-    except Exception:
-        return jsonify({"code": "ERROR"}), 500
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
+        })

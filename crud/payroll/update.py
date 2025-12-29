@@ -10,7 +10,6 @@ def update_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
     if not payroll:
         return payroll == False
     try:
-        # Update any fields provided
         if basic_salary:
             payroll.basic_salary = basic_salary
         
@@ -40,14 +39,12 @@ def update_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
 
         db.session.commit()
 
-        print("inserted into database")
-
         return payroll
 
-    except IntegrityError:
-        current_app.logger.error("raising exception for integrity")
-        raise
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
+        return error
 
-    except Exception:
-        current_app.logger.error("raising exception for unknown error")
-        raise
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return e

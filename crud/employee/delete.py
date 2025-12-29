@@ -11,10 +11,10 @@ def delete_employee_crud(username):
         db.session.commit()
         return delete_query
     
-    except IntegrityError:
-        current_app.logger.error("raising exception for integrity")
-        raise
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
+        return error
     
-    except Exception:
-        current_app.logger.error("raising exception for unknown error")
-        raise
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return e

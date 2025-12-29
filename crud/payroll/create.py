@@ -6,8 +6,6 @@ from sqlalchemy.exc import IntegrityError
 #Create payroll
 def create_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_hours, worked_hours, early, late, leaves, bonus1, bonus2):
 
-    print("payroll call recieved")
-
     try:
         create_query = Payroll(
             employee_id = employee_id,
@@ -28,11 +26,11 @@ def create_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
     
         return create_query
     
-    except IntegrityError:
-        current_app.logger.error("raising exception for integrity")
-        raise
-
-    except Exception:
-        current_app.logger.error("raising exception for unknown error")
-        raise
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
+        return error
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return e
 

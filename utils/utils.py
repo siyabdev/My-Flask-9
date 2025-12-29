@@ -6,7 +6,5 @@ def get_employee(username):
     return employee
 
 def get_payroll(employee_id, batch):
-    print(f"employee_id: {employee_id} batch: {batch}")
     payroll = Payroll.query.filter_by(employee_id=employee_id, batch=batch).first()
-    print(payroll)
     return payroll

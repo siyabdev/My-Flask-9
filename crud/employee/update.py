@@ -29,10 +29,11 @@ def update_employee_crud(username, name, email, role, password):
 
         return employee
     
-    except IntegrityError:
-        current_app.logger.error("raising exception for integrity")
-        raise
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
+        return error
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return e
 
-    except Exception:
-        current_app.logger.error("raising exception for unknown error")
-        raise

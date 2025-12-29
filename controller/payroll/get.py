@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify, current_app
 from crud.payroll.get import get_payroll_crud, get_payrolls_crud
 from schemas.payroll import PayrollResponse, PayrollListResponse
+from sqlalchemy.exc import IntegrityError
 from auth import require_auth
 
 payroll_get_bp = Blueprint("payroll_get_bp", __name__, url_prefix="/payroll")
@@ -14,32 +15,39 @@ def get_payroll():
     batch = data.get("batch")
 
     if not employee_id or not batch:
-        current_app.logger.error("No id and batch.")
+        current_app.logger.error(f"No employee id {employee_id} and batch {batch}.")
         return jsonify({
-            "CODE":"NO_EMPLOYEE_ID_OR_BATCH_PROVIDED",
-            "message":"Please enter employee id and batch"
+            "code":"NO_EMPLOYEE_ID_OR_BATCH_PROVIDED",
+            "message":f"Please enter employee id {employee_id} and batch {batch}."
         }), 403
     
     payroll = get_payroll_crud(employee_id=employee_id, batch=batch)
 
     try:
         if payroll:
+            current_app.logger.info(f"Payroll {payroll} response returned.")
             return PayrollResponse(payroll).to_dict()
         
         else:
-            current_app.logger.error("Id or batch doesnt exist")
+            current_app.logger.error(f"Employee id {employee_id} or batch {batch} doesnt exist.")
             return jsonify({
-                "CODE":"EMPLOYEE_ID_OR_BATCH_DOESNT_EXIST",
-                "message": f"Please try another employee_id or batch, {employee_id}, '{batch}' is not registered"
+                "code":"EMPLOYEE_ID_OR_BATCH_DOESNT_EXIST",
+                "message": f"Please try another employee_id or batch, {employee_id}, '{batch}' not registered"
             }), 403
-
-    except Exception as error:
-            print(f"error:{error}")
-            current_app.logger.error("Exceptional error")
-            return jsonify({
-                "CODE":"EXCEPTIONAL_ERROR_OCCURED",
-                "message":f"Exceptional error occured for getting payroll {employee_id} '{batch}', please try again"
-            })
+        
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
+        return jsonify({
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
+        })
     
 #Get all payrolls
 @payroll_get_bp.route("/all", methods=["GET"])
@@ -50,18 +58,25 @@ def get_all_payrolls():
          get_payrolls = get_payrolls_crud()
 
          if get_payrolls:
-              current_app.logger.info(f"All payrolls : {get_payrolls}")
-              return PayrollListResponse.build(get_payrolls)
+              current_app.logger.info(f"All payrolls {get_payrolls} response returned.")
+              return PayrollListResponse.from_list(get_payrolls)
          else:
-            current_app.logger.info("No payrolls found")
+            current_app.logger.info(f"No payrolls {get_payrolls} found.")
             return jsonify({
-                "CODE":"NO_PAYROLLS_FOUND",
-                "message":"No payrolls found, please add payroll first"
+                "code":"NO_PAYROLLS_FOUND",
+                "message":f"No payrolls {get_payrolls} found, please add any payroll first."
             })
-    except Exception as error:
-        print(f"error:{error}")
-        current_app.logger.error("Exceptional error")
+    
+    except IntegrityError as error:
+        current_app.logger.error(f"Integrity error {error}.")
         return jsonify({
-            "CODE":"EXCEPTIONAL_ERROR_OCCURED",
-            "message":"Exceptional error occured for getting all payrolls, please try again"
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
         })

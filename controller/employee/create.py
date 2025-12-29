@@ -15,19 +15,19 @@ def create_employee():
     valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error(f"Schema error. {message}"),400
+        current_app.logger.error(f"Schema error. {message}."),400
         return jsonify({
-                "code": "SCHEMA_ERROR",
-                "error": message
-            }), 400
+            "code": "SCHEMA_ERROR",
+            "message": f"Schema error occured {message}."
+        }), 400
     
     employee_by_username = get_employee(data.username)
 
     if employee_by_username:
-        current_app.logger.info("Employee already exists.")
+        current_app.logger.info(f"Employee already exists. '{employee_by_username}'")
         return jsonify({
-                "code": "EMPLOYEE_ALREADY_EXISTS",
-                "message": f"This username {data.username} already exists, try a new one"
+            "code": "EMPLOYEE_ALREADY_EXISTS",
+            "message": f"This username '{data.username}' already exists, try a new one."
         }), 403
     
     try:
@@ -39,15 +39,23 @@ def create_employee():
             role=data.role
         )
 
-        current_app.logger.info(f"employee created: {new_employee}")
+        current_app.logger.info(f"employee {new_employee} created.")
         return jsonify({
             "code": "EMPLOYEE_CREATED",
             "data": EmployeeResponse(new_employee).to_dict()
         }), 201
 
     except IntegrityError as error:
-        return jsonify({"code": "INTEGRITY_ERROR", "message": str(error)}), 409
+        current_app.logger.error(f"Integrity error {error}.")
+        return jsonify({
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
 
-    except Exception:
-        return jsonify({"code": "ERROR"}), 500
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code": "EXCEPTIONAL_ERROR",
+            "message": f"Exceptional error occured {e}."
+        }), 500
 

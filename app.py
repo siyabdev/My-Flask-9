@@ -29,7 +29,6 @@ def create_app():
 
     # Logging
     app.logger.setLevel(app.config["LOG_LEVEL"])
-    app.logger.info("Test")
 
     # Initialize database
     init_db(app)

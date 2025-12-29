@@ -15,19 +15,19 @@ def create_payroll():
     valid, message = data.is_valid()
 
     if not valid:
-        current_app.logger.error(f"Schema error. {message}"), 400
+        current_app.logger.error(f"Schema error {message}."), 400
         return jsonify({
             "code": "SCHEMA_ERROR",
-            "error": message
+            "message": f"Schema error occured {message}."
         }), 400
 
     checking_payroll = get_payroll(data.employee_id, data.batch)
 
     if checking_payroll: 
-        current_app.logger.info("Payroll already exists.")
+        current_app.logger.info(f"Payroll {checking_payroll} already exists.")
         return jsonify({
-                "CODE": "PAYROLL_ALREADY_EXISTS",
-                "message": f"This payroll {data.employee_id}, '{data.batch}' already exists, try a new one"
+            "code": "PAYROLL_ALREADY_EXISTS",
+            "message": f"This payroll {data.employee_id}, '{data.batch}' already exists, try a new one."
         }), 403
     
     try:
@@ -44,16 +44,23 @@ def create_payroll():
             bonus1 = data.bonus1,
             bonus2 = data.bonus2
         )
-        current_app.logger.info("Payroll created.")
+
+        current_app.logger.info(f"Payroll {new_payroll} created.")
         return jsonify({
-            "CODE": "PAYROLL_CREATED",
+            "code": "PAYROLL_CREATED",
             "data": PayrollResponse(new_payroll).to_dict()
         }), 201
-
+    
     except IntegrityError as error:
-        current_app.logger.error("Integrity error")
-        return jsonify({"CODE": "INTEGRITY_ERROR", "message": str(error)}), 409
-
-    except Exception:
-        current_app.logger.error("Exceptional error")
-        return jsonify({"CODE": "EXCEPTIONAL_ERROR"}), 500
+        current_app.logger.error(f"Integrity error {error}.")
+        return jsonify({
+            "code": "INTEGRITY_ERROR",
+            "message": f"Integrity error occured {error}."
+        }), 409
+    
+    except Exception as e:
+        current_app.logger.error(f"Exceptional error {e}.")
+        return jsonify({
+            "code":"EXCEPTIONAL_ERROR_OCCURED",
+            "message":f"Exceptional error {e} occured. Please try again."
+        })
