@@ -43,8 +43,8 @@ def update_payroll_crud(employee_id, batch, basic_salary, hourly_rate, monthly_h
 
     except IntegrityError as error:
         current_app.logger.error(f"Integrity error {error}.")
-        return error
+        raise error
 
     except Exception as e:
         current_app.logger.error(f"Exceptional error {e}.")
-        return e
+        raise e
