@@ -71,4 +71,4 @@ class Payroll(BaseModel):
     
     @classmethod
     def to_dict_list(cls, payrolls):
-        return [pay.to_dict() for pay in payrolls]
+        return [pay.to_dict() for pay in payrolls] 
