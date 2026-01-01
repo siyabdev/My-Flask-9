@@ -9,15 +9,15 @@ def get_employee_crud(username):
     try:
         employee = get_employee(username)
         print(f"employee:{employee}")
-        return employee
+        raise employee
     
     except IntegrityError as error:
         current_app.logger.error(f"Integrity error {error}.")
-        return error
+        raise error
     
     except Exception as e:
         current_app.logger.error(f"Exceptional error {e}.")
-        return e
+        raise e
 
 #Get all employees
 def get_employees_crud():
@@ -28,11 +28,11 @@ def get_employees_crud():
 
     except IntegrityError as error:
         current_app.logger.error(f"Integrity error {error}.")
-        return error
+        raise error
     
     except Exception as e:
         current_app.logger.error(f"Exceptional error {e}.")
-        return e
+        raise e
 
 #Get short details (employee)
 def get_employee_short_crud():
