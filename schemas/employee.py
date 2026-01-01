@@ -79,7 +79,7 @@ class EmployeeResponse:
         self.email = employee.email
         self.username = employee.username
         self.password = employee.password
-        self.role = employee.role.value
+        self.role = employee.role
 
     def to_dict(self):
         return {
