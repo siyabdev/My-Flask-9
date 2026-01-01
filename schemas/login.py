@@ -5,10 +5,10 @@ class LoginRequest:
     
     def is_valid(self):
         if not self.username:
-            return False, "Username is required"
+            return False, "Username is required."
         
         if not self.password:
-            return False, "Password is required"
+            return False, "Password is required."
         
         return True, None
 

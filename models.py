@@ -14,7 +14,8 @@ class Employee(BaseModel):
     username = db.Column(db.String(80), nullable=False)
     password = db.Column(db.String(120), nullable=False)
     email = db.Column(db.String(120), nullable=False)
-
+    role = db.Column(db.String(120), nullable=False)
+    
     __table_args__ = (
         UniqueConstraint("email", name="unique_employee_email"),
         UniqueConstraint("username", name="unique_employee_username"),

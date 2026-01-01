@@ -34,9 +34,9 @@ def delete_payroll():
         if delete_query:
             current_app.logger.info(f"Payroll {payroll} deleted.")
             return jsonify({
-                    "code": "PAYROLL_DELETED",
-                    "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted."
-                })
+                "code": "PAYROLL_DELETED",
+                "message": f"Payroll {data.employee_id}, '{data.batch}' is deleted."
+            })
     
     except IntegrityError as error:
         current_app.logger.error(f"Integrity error {error}.")
